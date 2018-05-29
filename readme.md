@@ -1,5 +1,3 @@
-# Processo Seletivo Radix - Analista Desenvolvedor JAVA
-  
 ## Cenário
   
   
@@ -467,42 +465,4 @@ Casos de Teste:
 	- ADEBC (4 paradas)
 8. Distância mínima de A para C: ABC  (distância = 9)
 9. Distância mínima de B para B: B (distância = 0)
-
-
-## Detalhes Técnicos
-
-Para iniciar o desenvolvimento, favor criar um fork deste repositório para sua conta pessoal. Essa será a versão utilizada para sua avaliação, portanto não esqueça de dar a permissão com role Reporter ao usuário da radix (radix.recruit) ao repositório recém criado.
-
-Você deverá implementar mais do que um simples algoritmo de solução. Estamos esperando uma aplicação executável com uma estrutura mínima. Você deverá modelar essa estrutura de objetos e utilizar Design Patterns sempre que apropriado e necessário, mas não se esqueça de manter tudo o mais simples possível.
-
-1. A aplicação já contém a estrutura Maven necessária para sua construção.
-2. Garanta que sua suíte de testes faça parte da etapa de construção e esteja executando com sucesso.
-3. A aplicação pode ser inicializada pelo simples comando Maven: mvn spring-boot:run
-4. Você pode definir outra maneira de inicializar sua aplicação conforme se sentir mais confortável, porém alem de recomendarmos a utilização do Spring Boot por maior simplicidade, também recordamos que você não deve quebrar essa inicialização já existente. Sua aplicação deve funcionar perfeitamente utilizando o comando de inicialização do Spring Boot.
-5. A aplicação deve conter a API stateless conforme especificação e usar um banco de dados local para salvar os dados quando necessário. 
-6. Um banco de dados em memória H2 já está disponível e configurado para utilização na base do projeto disponibilizado. Sinta-se a vontade para alterar essa implementação mas você deve garantir que sua aplicação continue funcionando independente do ambiente externo.
-7. A criação do banco de dados assim como sua estrutura de tabelas deverá acontecer de forma automática em tempo de execução (Isso também já está configurado, apenas garanta que sua modelagem seja feita de forma coerente). 
-8. Não se esqueça de documentar qualquer informação adicional que você acreditar que seja importante para avaliação do seu projeto.
-
-Dica -> Documentação Recomendada: https://spring.io/guides/gs/rest-service/
-
-## Finalização do Desenvolvimento
-
-Assim que finalizado seu projeto crie um merge request para enviar sua alterações ao repositório original da Radix. Sua avaliação será realizada nesta versão, futuras alterações não serão consideradas.
-
-Recomendamos que você utilize seu repositório pessoal para organizar suas atividades de desenvolvimento. Trabalhe com commits organizados e envie pequenas alterações para sua branch sempre que tiver o código e aplicação estáveis para execução. Não faça o merge request para o repositório original antes de terminar completamente todo o seu projeto.
-
-## Avaliação
-
-Você será avaliado nos seguintes aspectos, em ordem de prioridade:
-1. Performance e correta execução da especificação funcional
-2. Legibilidade de código e consistência de nomenclaturas
-3. Modelagem e OO (Orientação à Objetos)
-4. Testes Unitários
-5. Uso apropriado do Java, assim como as frameworks e suas melhores práticas
-6. Completar todas funcionalidades
-
-Observe que neste projeto é mais importante que você entregue um código de qualidade do que todas as funcionalidades exigidas. 
-Seu código será avaliado independente da entrega total de funcionalidades.
-É esperado que você desenvolva sem ajuda ou intervenção direta de terceiros, mas encorajamos que você pesquise por soluções e boas práticas sem nenhum tipo de restrição, apenas lembre-se que serão realizadas perguntas na entrevista a fim de certificar seu conhecimento total sobre a implementação. **Jogue limpo!**
 
