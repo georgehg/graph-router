@@ -1,28 +1,48 @@
-## Cenário
+# Java Challenge
+
+
+## Please read first 
+
+
+We usually ask candidates to deliver this assessment within 3 days.
+
+If you are unable to take 3 days to work on this assessment, please let your recruiter know
+beforehand. If you are busy at work, our recommendation is that you ask to do this test on a
+weekend. We are very flexible as long as you provide a reasonable explanation.
+  
+  Not having enough time will not be accepted as an excuse to deliver an unsatisfactory solution.
   
   
-Uma empresa de transporte de carga e pessoal faz algumas rotas de entrega em um
-grupo de cidades locais. Dada uma simplificação do modelo, todas as rotas entre essas cidades são unidirecionais.
-Portanto, mesmo que de fato exista uma via bidirecional entre duas cidades,
-as suas rotas não necessariamente terão a mesma distância de ida e de volta.
+## Background
+  
+  
+Lannister Carriage Services provides commute and transportation services to a number of
+towns in the great land of Westeros. Because of economical reasons and to avoid ambushes,
+most routes are "oneway".
+That is, a route from Volantis to King's Landing does not imply in a
+route from King's Landing to Volantis. In fact, even if both of these routes do happen to exist,
+they are distinct and are not necessarily the same distance!
 
 
-## Objetivo
+## Story Phase
 
 
-Essa empresa deseja portanto conhecer as melhores rotas entre algumas cidades 
-e suas devidas distâncias com o intuito de definir a melhor logística de trabalho.
-Para isso a radix foi contratada com o intuito de prover Endpoints REST de algumas funcionalidades comuns. 
+As a Lannister Carriage Services customer I want to know the available routes between towns
+as well as their distances so I can choose the best route for my travel.
 
 
-## Critério de aceitação
+## Business Narrative/Scenario
 
-A entrada será dada como um grafo direcionado onde um nó representa uma cidade e uma aresta representa uma rota entre duas cidades. 
-O peso da aresta representa então a distância dessa rota.
-Uma dada rota jamais aparecerá mais de uma vez, e para uma dada rota, as cidades de origem e destino sempre serão diferentes.
+The purpose of this application is to help Lannister Carriage Services provide its customers
+information about the routes. In particular, you will compute the distance along a certain route,
+the number of different routes between two towns, and the shortest route between two towns.
 
-Uma rota direcionada será dada como um objeto JSON, onde as cidades serão nomeadas usando letras do alfabeto [A-Z]. 
-Exemplo: uma rota de A para B com distância 5 é representada como:
+
+## Functional / Acceptance Criteria
+
+The input will be given as a directed graph where a node represents a town and an edge represents a route between two towns. The weighting of the edge represents the distance between the two towns. A given route will never appear more than once, and for a given route, the starting and ending town will not be the same town.
+
+The directed graph will be represented as plain text, where the towns are named using letters from the alphabet. A route from town A to town B with distance 5 is represented by the string **AB5**. It also can be represented as JSON:
 
 ```javascript
 { 
@@ -32,17 +52,15 @@ Exemplo: uma rota de A para B com distância 5 é representada como:
 }
 ```
 
-![Exemplo gráfico do Grafo](Graph.png)
+![Example of a graph](Graph.png)
 
-## Funcionalidades Esperadas (Especificação Funcional)
+### Save graph configuration
 
-### Salvar Grafo
+This endpoint should receive a graph and store it in the database for future references. It should associate an integer identifier to the graph and send it on the response body.
 
-Esse endpoint deverá receber as arestas de um grafo e salva-las em um banco de dados para consultas posteriores.
-
-* Endpoint: `http://localhost:8080/graph`
+* Endpoint: `http://<host>:<port>/graph`
 * HTTP Method: POST
-* HTTP Success Response Code: CREATED (201)
+* HTTP Response Code: CREATED
 * Contract:
   * Request payload
 
@@ -129,14 +147,13 @@ Esse endpoint deverá receber as arestas de um grafo e salva-las em um banco de 
 }
 ```
 
-### Recuperar Grafo
+### Retrieve graph configuration
 
-Esse endpoint deverá retornar um grafo previamente salvo no banco de dados. Se o grafo não existe, deverá retornar HTTP NOT FOUND.
+This endpoint should retrieve a previously saved graph from the database. If the graph doesn't exist, should return a NOT FOUND error response.
 
-* Endpoint: `http://localhost:8080/graph/<graphId>`
+* Endpoint: `http://<host>:<port>/graph/<graph id>`
 * HTTP Method: GET
-* HTTP Success Response Code: OK (200)
-* HTTP Error Response Code: NOT FOUND (404)
+* HTTP Response Code: OK
 * Contract:
   * Request payload: none
 
@@ -183,16 +200,16 @@ Esse endpoint deverá retornar um grafo previamente salvo no banco de dados. Se 
 }
 ```
 
-### Encontrar todas rotas disponíveis dada uma cidade de origem e outra de destino
+### Find available routes from a given pair of towns
 
-Esse endpoint deverá calcular todas as rotas disponíveis de uma cidade origem para outra de destino, dado um número máximo de paradas. 
-Se não existirem rotas possíveis, o resultado deverá ser uma lista vazia. Se o parâmetro "maxStops" não for definido, você deverá listar todas as rotas possíveis.
+This endpoint should compute all available routes from any given pair of towns within a given maximum number
+of stops. If there's no available routes, the result should be an empty list. In case the parameter "maxStops" is not provided, you should list all routes for the given pair of towns.
 
-Exemplo: No grafo (AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7), as possíveis rotas de A para C com máximo de 3 paradas seriam: ["ABC", "ADC", "AEBC"]
+For instance, in the graph (AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7), the possible routes from A to C with maximum of 3 stops would be: ["ABC", "ADC", "AEBC"]
 
-* Endpoint: `http://localhost:8080/edges/from/<town1>/to/<town2>?maxStops=<maxStops>`
+* Endpoint: `http://<host>:<port>/routes/from/<town 1>/to/<town 2>?maxStops=<maximum number of stops>`
 * HTTP Method: POST
-* HTTP Response Code: OK (200)
+* HTTP Response Code: OK
 * Contract:
   * Request payload
 
@@ -234,61 +251,60 @@ Exemplo: No grafo (AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7), as possíveis r
 
 ```javascript
 {
-  "edges": [
+  "routes": [
     {
-      "edge": "ABC",
+      "route": "ABC",
       "stops": 2
     },
     {
-      "edge": "ADC",
+      "route": "ADC",
       "stops": 2
     },
     {
-      "edge": "AEBC",
+      "route": "AEBC",
       "stops": 3
     }
   ]
 }
 ```
 
-### Encontrar todas rotas disponíveis dada uma cidade de origem e outra de destino em um grafo salvo anteriormente
+### Find available routes from a given pair of towns on saved graph
 
-Esse endpoint deverá fazer exatamente o mesmo que o anterior, porém utilizando um grafo salvo anteriormente. Se o grafo não existir, deverá retornar HTTP NOT FOUND.
+This endpoint should do exactly the same calculation described ([in the previous section](#find-available-routes-from-a-given-pair-of-towns)) but it should use a previously saved graph. If the graph doesn't exist in the database, it should return a NOT FOUND error response.
 
-* Endpoint: `http://localhost:8080/edges/<graphId>/from/<town1>/to/<town2>?maxStops=<maxStops>`
+* Endpoint: `http://<host>:<port>/routes/<graph id>/from/<town 1>/to/<town 2>?maxStops=<maximum number of stops>`
 * HTTP Method: POST
-* HTTP Success Response Code: OK (200)
-* HTTP Error Response Code: NOT FOUND (404)
+* HTTP Response Code: OK
 * Contract:
   * Request payload: none
   * Response payload
 
 ```javascript
 {
-  "edges": [
+  "routes": [
     {
-      "edge": "ABC",
+      "route": "ABC",
       "stops": 2
     },
     {
-      "edge": "ADC",
+      "route": "ADC",
       "stops": 2
     },
     {
-      "edge": "AEBC",
+      "route": "AEBC",
       "stops": 3
     }
   ]
 }
 ```
 
-### Determinar distância de um caminho específico
+### Find distance for path
 
-Esse endpoint deverá retornar a distância total de um caminho entre uma lista direcionada e específica de cidades. Caso a lista de cidades esteja vazia ou seja unitária, o resultado deverá ser zero. Se o dado caminho não existir, então o resultado deverá ser -1.
+This endpoint should receive a directed graph and a ordered list of towns and retrieve the total distance on walking through the list of towns in the order they appear on the request. If the list of towns is empty or has a single element, the result should be zero. If there's no path described by the list of towns, the result should be -1.
 
-* Endpoint: `http://localhost:8080/distance`
+* Endpoint: `http://<host>:<port>/distance`
 * HTTP Method: POST
-* HTTP Response Code: OK (200)
+* HTTP Response Code: OK
 * Contract:
   * Request payload
 
@@ -341,14 +357,13 @@ Esse endpoint deverá retornar a distância total de um caminho entre uma lista 
 }
 ```
 
-### Determinar distância de um caminho específico em um grafo salvo
+### Find distance for path on saved graph
 
-Esse endpoint deverá fazer exatamente o mesmo que o anterior, porém utilizando um grafo salvo anteriormente. Se o grafo não existir, deverá retornar HTTP NOT FOUND.
+This endpoint should do exactly the same calculation described ([in the previous section](#find-distance-for-path)) but it should use a previously saved graph. If the graph doesn't exist in the database, it should return a NOT FOUND error response.
 
-* Endpoint: `http://localhost:8080/distance/<graphId>`
+* Endpoint: `http://<host>:<port>/distance/<graph id>`
 * HTTP Method: POST
-* HTTP Success Response Code: OK (200)
-* HTTP Error Response Code: NOT FOUND (404)
+* HTTP Response Code: OK
 * Contract:
   * Request payload
 
@@ -366,13 +381,13 @@ Esse endpoint deverá fazer exatamente o mesmo que o anterior, porém utilizando
 }
 ```
 
-### Determinar a distância mínima entre duas cidades
+### Find distance between two towns
 
-Esse endpoint deverá determinar a rota cuja distância seja a mínima possível entre duas cidades. Se as cidades de origem e destino forem iguais, o resultado deverá ser zero. Se não exitir rota possível entre as duas cidades, então o resultado deverá ser -1.
+This endpoint should receive a directed graph and find the shortest path between two towns. If the start and end town are the same, the result should be zero. If there's no path between these towns, it should be -1.
 
-* Endpoint: `http://localhost:8080/distance/from/<town1>/to/<town2>`
+* Endpoint: `http://<host>:<port>/distance/from/<town 1>/to/<town 2>`
 * HTTP Method: POST
-* HTTP Response Code: OK (200)
+* HTTP Response Code: OK
 * Contract:
   * Request payload
 
@@ -420,19 +435,18 @@ Esse endpoint deverá determinar a rota cuja distância seja a mínima possível
 
 ```javascript
 {
-  "distance" : 8,
+  "distance" : 3,
   "path" : ["A", "B", "C"]
 }
 ```
 
-### Determinar a distância mínima entre duas cidades em um grafo salvo
+### Find distance between two towns on saved graph
 
-Esse endpoint deverá fazer exatamente o mesmo que o anterior, porém utilizando um grafo salvo anteriormente. Se o grafo não existir, deverá retornar HTTP NOT FOUND.
+This endpoint should do exactly the same calculation described ([in the previous section](#find-distance-between-two-towns)) but it should use a previously saved graph. If the graph doesn't exist in the database, it should return a NOT FOUND error response.
 
-* Endpoint: `http://localhost:8080/distance/<graphId>/from/<town1>/to/<town2>`
+* Endpoint: `http://<host>:<port>/distance/<graph id>/from/<town 1>/to/<town 2>`
 * HTTP Method: POST
-* HTTP Success Response Code: OK (200)
-* HTTP Error Response Code: NOT FOUND (404)
+* HTTP Response Code: OK
 * Contract:
   * Request payload: none
 
@@ -440,29 +454,66 @@ Esse endpoint deverá fazer exatamente o mesmo que o anterior, porém utilizando
 
 ```javascript
 {
-  "distance" : 8,
+  "distance" : 3,
   "path" : ["A", "B", "C"]
 }
 ```
 
-## Dados para Teste
+## Test Data
 
-Grafo Entrada:
+Input graph:
 AB5, BC4, CD8, DC8, DE6, AD5, CE2, EB3, AE7
 
-Casos de Teste:
-1. Distância da Rota ABC: 9
-2. Distância da Rota AD: 5
-3. Distância da Rota ADC: 13
-4. Distância da Rota AEBCD: 22
-5. Distância da Rota AED: -1 (Inexistente)
-6. Rotas de origem C e destino C com um maximo de 3 paradas: 
-	- C  (0 paradas)
-7. Rotas de origem A e destino C com um maximo de 4 paradas:
-	- ABC   (2 paradas)
-	- ADC   (2 paradas)
-	- AEBC  (3 paradas)
-	- ADEBC (4 paradas)
-8. Distância mínima de A para C: ABC  (distância = 9)
-9. Distância mínima de B para B: B (distância = 0)
+Test cases:
+1. Distance of route ABC: 9
+2. Distance of route AD: 5
+3. Distance of route ADC: 13
+4. Distance of route AEBCD: 22
+5. Distance of route AED: NO SUCH ROUTE
+6. Routes starting at C and ending at C with a maximum of 3 stops: 
+	- CDC  (2 stops)
+	- CEBC (3 stops)
+7. Routes starting at A and ending at C with a maximum of 4 stops:
+	- ABC   (2 stops)
+	- ADC   (2 stops)
+	- AEBC  (3 stops)
+	- ADEBC (4 stops)
+8. Shortest route (by distance) from A to C: ABC  (distance = 9)
+9. Shortest route (by distance) from B to B: B (distance = 0)
+
+
+## Technical Details
+
+To start the development, please create a fork of this repository to your user account. That version will be used during the evaluation.
+
+You should implement more than a barebone algorithm. We are expecting a runnable application with a minimal structure. You should create an object model and use design patterns wherever they are appropriate, but try to keep things simple.
+
+1. The application already have a Maven build set up.
+2. Make sure your test suite is part of the build once you create it.
+3. The application starts with a Maven command: mvn spring-boot:run
+4. You can set up another way to start your application without Spring Boot but please make sure you **DO NOT BREAK** the Spring Boot initialization. Your application should work correctly when using Spring Boot initialize command.
+5. The application must have a stateless API and use a database to store data. 
+6. An embedded H2 in-memory database is already available for usage from the configuration of the project. Feel free to change that implementation but you must guarantee your application will initialize as a standalone process on any different environment.
+7. Although you can change the port the application will use on your local development, please make sure you **DO NOT CHANGE IT** on your repository.
+8. The database and tables creation should be done by Maven (extending the build process) or by the application. 
+9. Please document any additional information you think it's required to evaluate properly your test.
+
+## Evaluation
+
+Once you finish your assessment please create a merge request to push your changes to Avenue Code's repository. The evaluation will take the version you had at that moment and no future changes will be accepted.
+
+We recommend that you use your forked version of this repository to organize your development process. Push small changes to the repository and implement the features using baby steps may be a good tip to avoid spending too much time on debugging errors. You can use many commits and branches you like but make sure you have the merge request created **ONLY AT THE END OF YOUR DEVELOPMENT**.
+
+## Assessment Guidelines
+
+You will be assessed on the following aspects, sorted by priority:
+1. Code cleanness and naming consistency
+2. Object orientation design
+3. Automated tests (unit and/or integration tests)
+4. Appropriate use of the language, framework features and best practices
+5. Correct execution
+6. Feature completeness
+
+Please keep in mind that, for this assessment, it is more important that you deliver quality code than a feature complete implementation. Your code will still be evaluated even if you couldn't implement all the acceptance criteria.
+You're expected to complete this assessment without anyone's help. We will ask questions about your code in an interview. **Play fairly!**
 
